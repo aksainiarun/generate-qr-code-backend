@@ -20,7 +20,10 @@ app.get('/api/generate',  async(req, res) => {
      // Get the text or data for the QR code (you can modify this based on your needs)    
 
     // Generate the QR code
-    const qrCodeDataURL = await qrcode.toDataURL(value);
+    const qrCodeDataURL = await qrcode.toDataURL(value, {
+      margin: 1,
+      
+    });
 
     // Set headers to indicate the response is an image
     res.setHeader('Content-Type', 'image/png');
