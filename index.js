@@ -15,13 +15,11 @@ app.listen(PORT, () => {
   console.log('Server working properly')
 })
 
-app.get('/api/generate',  async(req, res) => {
+app.get('/api/image',  async(req, res) => {
   const { value } = req.query
   console.log(value)
   try {
-
-
-   // Generate the QR code and save it as a file (temporary solution)
+    // Generate the QR code and save it as a file (temporary solution)
     const filePath = path.join(__dirname, 'qrcode.png');
     await qrcode.toFile(filePath, value);
 
@@ -37,22 +35,29 @@ app.get('/api/generate',  async(req, res) => {
       fs.unlinkSync(filePath);
     });
 
-
+  } catch (error) {
+    res.status(500).json({ error: true, message: error })
+  }
+})
+app.get('/api/qrcode',  async(req, res) => {
+  const { value } = req.query
+  console.log(value)
+  try {
      // Get the text or data for the QR code (you can modify this based on your needs)    
 
     // Generate the QR code
-    // const qrCodeDataURL = await qrcode.toDataURL(value, {
-    //   margin: 1,
+    const qrCodeDataURL = await qrcode.toDataURL(value, {
+      margin: 1,
       
-    // });
+    });
 
     
 
     // Set headers to indicate the response is an image
-    //res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Content-Type', 'image/png');
 
     // Convert the base64 image to a buffer and send it as the response
-    //res.send(Buffer.from(qrCodeDataURL.split(',')[1], 'base64'));
+    res.send(Buffer.from(qrCodeDataURL.split(',')[1], 'base64'));
 
 
   } catch (error) {
