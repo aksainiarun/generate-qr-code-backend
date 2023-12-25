@@ -13,13 +13,22 @@ app.listen(PORT, () => {
   console.log('Server working properly')
 })
 
-app.get('/api/generate', (req, res) => {
+app.get('/api/generate',  async(req, res) => {
   const { value } = req.query
   console.log(value)
   try {
-    qrcode.toDataURL(value, { margin: 1 }, function (err, url) {
-      res.status(200).send(`<img src="${url}" />`)
-    })
+     // Get the text or data for the QR code (you can modify this based on your needs)    
+
+    // Generate the QR code
+    const qrCodeDataURL = await qrcode.toDataURL(value);
+
+    // Set headers to indicate the response is an image
+    res.setHeader('Content-Type', 'image/png');
+
+    // Convert the base64 image to a buffer and send it as the response
+    res.send(Buffer.from(qrCodeDataURL.split(',')[1], 'base64'));
+
+
   } catch (error) {
     res.status(500).json({ error: true, message: error })
   }
